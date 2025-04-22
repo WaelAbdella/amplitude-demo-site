@@ -1,15 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TrackedElement from '../components/TrackedElement';
 
 const FeaturesPage = () => {
+  // State for the feedback form
+  const [feedback, setFeedback] = useState('');
+
+  // --- Define props/snippets inside component to access state ---
   const button1Props = { featureName: 'Feature A', page: 'features' };
   const button1Snippet = `amplitude.track('Feature Button Clicked', ${JSON.stringify(button1Props, null, 2)});`;
 
   const button2Props = { featureName: 'Feature B', page: 'features' };
   const button2Snippet = `amplitude.track('Feature Button Clicked', ${JSON.stringify(button2Props, null, 2)});`;
 
-  const formProps = { formName: 'Sample Form', page: 'features' };
-  const formSnippet = `amplitude.track('Form Submitted', ${JSON.stringify(formProps, null, 2)});`;
+  // Include feedback state in form properties
+  const formProps = { formName: 'Sample Form', page: 'features', feedback: feedback };
+  // Update snippet to show feedback being included
+  const formSnippet = `amplitude.track('Form Submitted', {
+  formName: 'Sample Form',
+  page: 'features',
+  feedback: '${feedback.replace(/'/g, "\'")}'
+});`;
+  // -----------------------------------------------------------
 
   return (
     <div className="p-4">
@@ -30,18 +41,32 @@ const FeaturesPage = () => {
       </TrackedElement>
 
       {/* Tracked Form */}
-      {/* Use trigger='onSubmit' for forms */}
-       <TrackedElement eventName="Form Submitted" eventProperties={formProps} codeSnippet={formSnippet} trigger="onSubmit">
-          <form className="mt-4 border p-4 rounded inline-block"> {/* Make form inline-block for wrapper */}
+      <div className="mt-8 border p-4 rounded">
+        <h2 className="text-xl font-semibold mb-2">Feedback Form</h2>
+        <TrackedElement
+          eventName="Form Submitted"
+          eventProperties={formProps} // Pass dynamic props
+          codeSnippet={formSnippet} // Pass dynamic snippet
+          interactionType="track"
+          trigger="onSubmit"
+        >
+          <form>
             <label className="block mb-2">
-              Sample Input:
-              <input type="text" className="border rounded p-1 ml-2" />
+              Your Feedback:
+              <textarea
+                className="border rounded p-1 ml-2 w-full mt-1"
+                value={feedback} // Controlled component
+                onChange={e => setFeedback(e.target.value)} // Update state
+                rows={3}
+              ></textarea>
             </label>
-            <button type="submit" className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mt-2">
-              Submit Form (Tracked)
+            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2">
+              Submit Feedback (Tracked)
             </button>
           </form>
-      </TrackedElement>
+        </TrackedElement>
+      </div>
+
     </div>
   );
 };

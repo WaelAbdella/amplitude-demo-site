@@ -3,71 +3,92 @@ import TrackedElement from '../components/TrackedElement';
 import { Identify, setUserId } from '../utils/amplitude';
 
 const SignupLoginPage = () => {
-  // State to hold form values for identify call
   const [email, setEmail] = useState('');
   const [plan, setPlan] = useState('free');
 
-  // Construct Identify object based on state
-  const identifyObj = new Identify()
-    .set('email', email || undefined) // Set only if email exists
-    .set('plan', plan);
-  const identifyCodeSnippet = `// Assuming 'email' and 'plan' variables hold form values:\nconst identifyObj = new Identify()\n  .set('email', email)\n  .set('plan', plan);\n\namplitude.identify(identifyObj);\n\n// Also setting userId for the session:\namplitude.setUserId(email);`;
+  // Define event properties for the *track* call (form submission CTA)
+  const formEventProps = {
+    page: 'signup_login',
+    email: email, // Include email from state
+    plan: plan,   // Include plan from state
+  };
+  const formCodeSnippet = `// Form Submit Track Call:
+amplitude.track('Signup Form Submitted', {
+  page: 'signup_login',
+  email: '${email.replace(/'/g, "\'")}',
+  plan: '${plan}'
+});
 
-  // Handler to update state AND set userId
-  const handleIdentifySubmit = () => {
-     // Simulate setting user ID when identifying
+// Separate User Identification:
+// amplitude.setUserId('${email.replace(/'/g, "\'")}');
+// const identifyObj = new Identify().set('plan', '${plan}');
+// amplitude.identify(identifyObj);`;
+
+  // Handler to set userId *before* form submission tracking
+  const handleFormSubmit = () => {
      if (email) {
         setUserId(email);
         console.log(`Amplitude User ID set to: ${email}`);
+        // Optionally send an identify call here too if needed
+        // const identifyObj = new Identify().set('plan', plan);
+        // identify(identifyObj); // Using the imported identify
      } else {
-        // Optional: clear user ID if email is cleared? Or handle anonymous users
-        setUserId(null); // Explicitly set to null for anonymous
+        setUserId(null);
         console.log('Amplitude User ID cleared (no email provided).');
      }
-     // Note: The actual identify call is handled by TrackedElement
+     // The track call is handled by TrackedElement on submit
   };
 
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Signup/Login Page</h1>
-      <p>Form-based identify call simulation placeholder. Submitting the form will trigger an <code>identify()</code> call with the entered data and set the User ID for the session if an email is provided.</p>
+      <p>Form-based track call simulation. Submitting the form will set the User ID (if email provided) and trigger a <code>track()</code> call for the submission including email and plan.</p>
 
-      {/* Tracked Form for Identify */}
-      {/* Pass identifyObject and interactionType='identify', trigger='onSubmit' */}
-      {/* Attach our custom handler to the form's onSubmit as well */}
+      {/* Tracked Form - now using track instead of identify */}
       <TrackedElement
-        identifyObject={identifyObj}
-        interactionType="identify"
-        codeSnippet={identifyCodeSnippet}
+        eventName="Signup Form Submitted" // Event name for the CTA
+        eventProperties={formEventProps}    // Pass dynamic props
+        codeSnippet={formCodeSnippet}     // Pass dynamic snippet
+        interactionType="track"         // Changed to track
         trigger="onSubmit"
       >
-        <form className="mt-4 border p-4 rounded inline-block" onSubmit={handleIdentifySubmit}>
-            <label className="block mb-2">
-            Email:
+        <form onSubmit={handleFormSubmit} className="mt-4 border p-4 rounded"> {/* Call handler on submit */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+              Email (Sets User ID)
+            </label>
             <input
-                type="email"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="user@example.com"
-                className="border rounded p-1 ml-2" />
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="email"
+              type="email"
+              name="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="user@example.com"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="plan">
+              Choose Plan (User Property)
             </label>
-            <label className="block mb-2">
-            Plan:
             <select
-                name="plan"
-                value={plan}
-                onChange={(e) => setPlan(e.target.value)}
-                className="border rounded p-1 ml-2"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="plan"
+              name="plan"
+              value={plan}
+              onChange={e => setPlan(e.target.value)}
             >
-                <option value="free">Free</option>
-                <option value="pro">Pro</option>
-                <option value="enterprise">Enterprise</option>
+              <option value="free">Free</option>
+              <option value="basic">Basic</option>
+              <option value="pro">Pro</option>
             </select>
-            </label>
-            <button type="submit" className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mt-2">
-            Sign Up / Identify (Tracked)
-            </button>
+          </div>
+          <button
+            type="submit"
+            className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded mt-2"
+          >
+            Sign Up / Login (Tracked)
+          </button>
         </form>
       </TrackedElement>
     </div>

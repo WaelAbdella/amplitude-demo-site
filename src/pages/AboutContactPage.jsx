@@ -11,9 +11,17 @@ const AboutContactPage = () => {
   // Define event properties for the form
   const formEventProps = {
     form_type: 'contact',
-    page: 'about_contact'
+    page: 'about_contact',
+    name: formData.name,
+    email: formData.email,
   };
-  const formCodeSnippet = `amplitude.track('Form Submitted', {\n  form_type: 'contact',\n  page: 'about_contact'\n});`;
+  const formCodeSnippet = `amplitude.track('Form Submitted', {
+  form_type: 'contact',
+  page: 'about_contact',
+  name: '${formData.name.replace(/'/g, "\'")}',
+  email: '${formData.email.replace(/'/g, "\'")}'
+  // message length: ${formData.message.length}
+});`;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +34,7 @@ const AboutContactPage = () => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">About/Contact Page</h1>
-      <p>Form-based track call simulation placeholder. Submitting the form will trigger a <code>track()</code> call with the specified event properties.</p>
+      <p>Form-based track call simulation placeholder. Submitting the form will trigger a <code>track()</code> call including the entered name and email.</p>
 
       {/* Tracked Form */}
       <TrackedElement
@@ -48,6 +56,7 @@ const AboutContactPage = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
+              required
             />
           </div>
           <div className="mb-4">
@@ -61,6 +70,7 @@ const AboutContactPage = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              required
             />
           </div>
           <div className="mb-4">
@@ -73,6 +83,7 @@ const AboutContactPage = () => {
               name="message"
               value={formData.message}
               onChange={handleChange}
+              rows={4}
             />
           </div>
           <button
