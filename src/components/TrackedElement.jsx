@@ -1,6 +1,7 @@
 import React from 'react';
 import { useOutletContext } from 'react-router-dom'; // To get isDevMode state
-import { trackWithDevInfo, identifyWithDevInfo, Identify } from '../utils/amplitude';
+import { track, identify, Identify } from '../utils/amplitude'; // Import standard functions
+import { devInfoLogger } from '../utils/DevInfoLogger'; // Import the logger
 
 /**
  * Wrapper component to track interactions and optionally display debug info.
@@ -29,47 +30,55 @@ const TrackedElement = ({
     // Prevent default form submission if trigger is onSubmit
     if (trigger === 'onSubmit') {
       e.preventDefault();
-      console.log('Form submitted (prevented default)');
+      // console.log('Form submitted (prevented default)'); // Optional: keep for debugging
     }
 
-    // Call original handler if it exists
+    // Call original handler if it exists and is a function
     if (children?.props && typeof children.props[trigger] === 'function') {
       children.props[trigger](e);
     }
 
-    // Fire Amplitude event
+    // Fire Amplitude event and log if in Dev Mode
     if (interactionType === 'track' && eventName) {
-      trackWithDevInfo(eventName, eventProperties || {}, codeSnippet);
+      track(eventName, eventProperties || {}); // Use standard track
+      if (isDevMode) {
+        devInfoLogger.log({
+          type: 'track',
+          name: eventName,
+          properties: eventProperties || {},
+          code: codeSnippet,
+        });
+      }
     } else if (interactionType === 'identify' && identifyObject instanceof Identify) {
-      identifyWithDevInfo(identifyObject, codeSnippet);
+      identify(identifyObject); // Use standard identify
+       if (isDevMode) {
+        // Log identify call. Identify object structure might be complex,
+        // log relevant parts or the code snippet.
+        // For simplicity, logging the code snippet which should detail the identify properties.
+         devInfoLogger.log({
+           type: 'identify',
+           name: 'User Identify', // Generic name for identify calls
+           properties: identifyObject.payload, // Log the actual payload
+           code: codeSnippet,
+         });
+       }
     }
   };
 
-  // Clone the child element to add the interaction handler
-  const childElement = React.Children.only(children);
-  const trackedChild = React.cloneElement(childElement, {
+  // Determine if children is a valid React element to clone
+  const isValidElement = React.isValidElement(children);
+
+  // Create props for the wrapped element
+  const elementProps = {
     [trigger]: handleInteraction,
-  });
+    // Add title attribute for code snippet on hover only in dev mode
+    ...(isDevMode && codeSnippet && { title: codeSnippet }),
+    // Add a visual indicator in dev mode (e.g., a border)
+    ...(isDevMode && { className: `${children?.props?.className || ''} border-2 border-dashed border-blue-500` }),
+  };
 
-  return (
-    <div className="inline-block relative group"> {/* Wrapper for positioning snippet */}
-      {trackedChild}
-      {isDevMode && codeSnippet && (
-         <div className="absolute left-0 bottom-full mb-2 w-max max-w-xs bg-gray-900 text-white text-xs rounded p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 whitespace-pre-wrap shadow-lg">
-           <pre className="bg-transparent p-0 m-0 text-white">{codeSnippet}</pre>
-        </div>
-
-        /* Alternative: Display below the element */
-        /*
-        <div className="mt-2 text-xs text-gray-600 w-full">
-          <pre className="bg-gray-100 p-2 rounded overflow-x-auto">
-            <code>{codeSnippet}</code>
-          </pre>
-        </div>
-        */
-      )}
-    </div>
-  );
+  // Clone the child element with the new props
+  return isValidElement ? React.cloneElement(children, elementProps) : children;
 };
 
 export default TrackedElement; 
