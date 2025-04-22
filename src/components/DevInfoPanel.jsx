@@ -43,35 +43,28 @@ const DevInfoPanel = () => {
           </div>
         </div>
 
-        {/* Log List (Collapsible) */}
+        {/* Logs Container */}
         {isVisible && (
-          <div className="p-2 h-48 overflow-y-auto text-xs">
+          <div className="p-2 h-48 overflow-y-auto text-xs" style={{ maxHeight: '200px' }}>
             {logs.length === 0 ? (
               <p className="text-gray-500 italic">No logs yet. Interact with tracked elements.</p>
             ) : (
               <ul>
                 {logs.map((log, index) => (
                   <li key={index} className="mb-2 pb-2 border-b border-gray-200 last:border-b-0">
-                    <div className="font-mono font-semibold">
-                      <span className={`uppercase px-1 py-0.5 rounded text-white text-[10px] ${log.type === 'track' ? 'bg-blue-500' : 'bg-green-500'}`}>
-                        {log.type}
-                      </span>
-                      <span className="ml-2 text-gray-500 text-[10px]">{formatTimestamp(log.timestamp)}</span>
-                    </div>
-                    {log.type === 'track' && (
-                       <div className="mt-1"><strong>Event:</strong> {log.data.eventName}</div>
-                    )}
-                     <div className="mt-1">
-                       <strong>Data:</strong>
-                       <pre className="bg-gray-50 p-1 rounded text-[11px] whitespace-pre-wrap break-all">
-                         {JSON.stringify(log.data, null, 2)}
-                       </pre>
-                    </div>
-                     {log.codeSnippet && (
-                       <div className="mt-1">
-                         <strong>Snippet:</strong>
-                         <pre className="bg-gray-50 p-1 rounded text-[11px] whitespace-pre-wrap">
-                           {log.codeSnippet}
+                    <span className="font-semibold">{log.type}</span> <span className="text-gray-500">{formatTimestamp(log.timestamp)}</span>
+                    <p className="mt-1 mb-1">
+                      <strong>Event:</strong> {log.name || 'N/A'}<br />
+                      <strong>Data:</strong>
+                      <pre className="text-xs bg-gray-100 p-1 mt-1 rounded overflow-x-auto">
+                        {JSON.stringify(log.properties || {}, null, 2)}
+                      </pre>
+                    </p>
+                    {log.code && (
+                       <div>
+                         <strong>Code Snippet:</strong>
+                         <pre className="text-xs bg-gray-100 p-1 mt-1 rounded overflow-x-auto">
+                            {log.code}
                          </pre>
                        </div>
                     )}
