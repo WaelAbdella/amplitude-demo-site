@@ -61,14 +61,9 @@ const DevInfoPanel = ({ className }) => {
                   <p className="log-details">
                     {/* Display name differently based on type */}
                     {log.type === 'track' && <><strong>Event:</strong> {log.name || 'N/A'}<br /></>}
-                    {log.type === 'identify' && <><strong>Identify:</strong> User Traits<br /></>}
+                    {log.type === 'identify' && <><strong>Identify:</strong> User Traits Set/Modified<br /></>}
                     {log.type === 'setUserId' && <><strong>Set User ID:</strong> {log.properties?.userId ?? 'N/A'}<br /></>}
                     {log.type === 'error' && <><strong>Error:</strong> {log.name || 'N/A'}<br /></>}
-                    
-                    <strong>Data/Properties:</strong>
-                    <pre className="log-data-pre"> { /* Preformatted data class */}
-                      {JSON.stringify(log.properties || {}, null, 2)}
-                    </pre>
                   </p>
                   {log.code && (
                      <div className="log-code-snippet">
