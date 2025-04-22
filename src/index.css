@@ -2,6 +2,111 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply font-sans bg-[#F7F9FC] text-gray-800;
+  }
+}
+
+@layer components {
+  /* Button Styles */
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply bg-[#0072CE] text-white hover:bg-[#005ba3] focus:ring-[#0072CE];
+  }
+
+  .btn-secondary {
+    @apply bg-[#BDDCED] text-[#0072CE] hover:bg-[#a8d0e6] focus:ring-[#0072CE];
+  }
+
+  .btn-outline-primary {
+    @apply border border-[#0072CE] text-[#0072CE] hover:bg-[#BDDCED] focus:ring-[#0072CE];
+  }
+
+  .btn-full-width {
+    @apply w-full;
+  }
+
+  /* Card Styles */
+  .card {
+    @apply bg-white p-6 rounded-lg shadow-md border border-[#BDDCED] flex flex-col;
+  }
+
+  .feature-card {
+    @apply card hover:border-[#00AEEF];
+  }
+
+  /* Grid Layouts */
+  .features-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+  }
+
+  /* Typography */
+  .subtitle {
+    @apply text-xl text-gray-600 mb-8 max-w-2xl mx-auto;
+  }
+
+  h1 {
+    @apply text-3xl font-bold mb-6 text-center text-[#0072CE];
+  }
+
+  h2 {
+    @apply text-2xl font-semibold mb-4 text-[#0072CE];
+  }
+
+  /* Pricing Specific */
+  .price-container {
+    @apply mb-4 pb-4 border-b border-[#BDDCED];
+  }
+
+  .price-amount {
+    @apply text-4xl font-bold text-[#0072CE];
+  }
+
+  .price-frequency {
+    @apply text-sm text-[#00AEEF] ml-1;
+  }
+
+  /* Feature List */
+  .feature-description {
+    @apply text-gray-600 mb-4;
+  }
+
+  .feature-list {
+    @apply list-none p-0 mb-6 flex-grow;
+  }
+
+  .feature-list li {
+    @apply mb-2 flex items-center text-gray-700;
+  }
+
+  .feature-list li::before {
+    content: '✓';
+    @apply mr-2 text-[#00C2A9] font-bold;
+  }
+
+  /* Page Layout */
+  .page-container {
+    @apply max-w-7xl mx-auto px-4 py-8;
+  }
+}
+
+/* Page Specific Styles */
+.hero-section {
+  @apply text-center py-16 px-4;
+}
+
+.hero-section h1 {
+  @apply text-4xl md:text-5xl font-bold mb-4 text-[#0072CE];
+}
+
+.cta-buttons {
+  @apply mt-8 space-x-4;
+}
+
 /* Basic Reset / Normalize */
 html {
   box-sizing: border-box;
