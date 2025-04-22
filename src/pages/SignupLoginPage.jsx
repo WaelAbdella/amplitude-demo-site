@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import TrackedElement from '../components/TrackedElement';
-import { Identify, identify, setUserId } from '../utils/amplitude';
+import * as amplitude from '@amplitude/analytics-browser';
 import { devInfoLogger } from '../utils/DevInfoLogger';
 
+// Signup/Login Page using standard elements and CSS classes
 const SignupLoginPage = () => {
   const [email, setEmail] = useState('');
   const [plan, setPlan] = useState('free');
+  const [userId, setUserId] = useState(''); // For identify example
 
   // Define event properties for the *track* call (form submission CTA)
   const formEventProps = {
@@ -22,100 +24,121 @@ amplitude.track('Signup Form Submitted', {
   // Separate snippet for setUserId log
   const setUserIdSnippet = email ? `amplitude.setUserId('${email.replace(/'/g, "\'")}');` : `amplitude.setUserId(null);`;
 
-  // Handler to set userId *and* identify *before* form submission tracking
-  const handleFormSubmit = () => {
-     if (email) {
-        // 1. Set User ID
-        setUserId(email);
-        console.log(`Amplitude User ID set to: ${email}`);
-        devInfoLogger.addLog(
-          'setUserId', 
-          'Set User ID', 
-          { userId: email }, 
-          setUserIdSnippet
-        );
+  // Event properties for form submission
+  const formSubmitProps = { formName: 'Sign Up', page: 'Signup/Login' };
+  const formSubmitSnippet = `amplitude.track('Form Submitted', ${JSON.stringify(formSubmitProps, null, 2)});`;
 
-        // 2. Identify User (Set Properties)
-        const identifyObj = new Identify().set('plan', plan); // Create Identify object
-        identify(identifyObj); // Call identify
-        console.log(`Amplitude Identify call sent for plan: ${plan}`);
-        // Log Identify Call - Pass a simple object for properties
-        const identifySnippet = `const identifyObj = new Identify().set('plan', '${plan}');\namplitude.identify(identifyObj);`;
-        devInfoLogger.addLog(
-            'identify', 
-            'User Identify', 
-            { plan: plan }, // Pass simple {plan: plan} object here
-            identifySnippet
-        );
-
-     } else {
-        // Still set user ID to null for anonymous
-        setUserId(null);
-        console.log('Amplitude User ID cleared (no email provided).');
-        devInfoLogger.addLog(
-          'setUserId', 
-          'Clear User ID', 
-          { userId: null }, 
-          setUserIdSnippet
-        );
-     }
-     // 3. Track Form Submission (handled by TrackedElement wrapper automatically after this handler)
+  // Function to handle signup form submission
+  const handleSignupSubmit = (event) => {
+    event.preventDefault(); // Prevent actual form submission
+    // In a real app, you would send data to your backend here
+    console.log('Signup attempt with email:', email);
+    // Tracking happens via TrackedElement on the form
   };
+
+  // Function to handle user identification
+  const handleIdentifyUser = () => {
+    if (!userId) {
+      alert('Please enter a User ID to identify.');
+      return;
+    }
+    const identifyObject = new amplitude.Identify();
+    identifyObject.set('email', `${userId}@example.com`); // Example: Set email trait
+    identifyObject.set('plan', 'free'); // Example: Set plan trait
+    amplitude.identify(identifyObject, { user_id: userId });
+
+    // Log for Dev Panel
+    // Note: TrackedElement handles logging for button click, but we might 
+    // want separate logging for the identify call itself if needed.
+    console.log(`Identify called for User ID: ${userId}`);
+    alert(`Identify called for User ID: ${userId} with traits (see console/dev logs).`);
+  };
+
+  // Event properties and snippet for Identify button
+  const identifyButtonProps = { userId: userId, page: 'Signup/Login', action: 'identify' };
+  const identifyCodeSnippet = `const identify = new amplitude.Identify();\nidentify.set('email', '${userId || 'USER_ID'}@example.com');\nidentify.set('plan', 'free');\namplitude.identify(identify, { user_id: '${userId || 'USER_ID'}' });`;
 
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Signup/Login Page</h1>
-      <p>Submitting the form will set the User ID, send an <code>identify()</code> call (setting plan property), and track the submission event. All actions appear in Dev Logs.</p>
+      <p style={{ fontSize: '1.1rem', color: '#495057', marginBottom: '1.5rem' }}>
+        Demonstrating form tracking and user identification.
+      </p>
 
-      {/* Tracked Form - tracks the submit action */}
-      <TrackedElement
-        eventName="Signup Form Submitted"
-        eventProperties={formEventProps}
-        codeSnippet={formCodeSnippet}
-        interactionType="track"
-        trigger="onSubmit"
-      >
-        <form onSubmit={handleFormSubmit} className="mt-4 border p-4 rounded">
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-              Email (Sets User ID)
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="email"
-              type="email"
-              name="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="user@example.com"
+      <div className="signup-login-grid">
+        {/* Signup Form Card */}
+        <div className="card">
+          <h2>Sign Up</h2>
+          <TrackedElement
+            eventName="Form Submitted"
+            eventProperties={formSubmitProps}
+            codeSnippet={formSubmitSnippet}
+            interactionType="track"
+            trigger="onSubmit"
+          >
+            <form onSubmit={handleSignupSubmit} className="mt-4 border p-4 rounded">
+              <div className="form-group">
+                <label htmlFor="signup-email" className="form-label">Email address</label>
+                <input 
+                  type="email" 
+                  className="form-control" 
+                  id="signup-email" 
+                  placeholder="Enter email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <button type="submit" className="btn btn-primary">Sign Up (Tracked)</button>
+            </form>
+          </TrackedElement>
+        </div>
+
+        {/* Identify User Card */}
+        <div className="card">
+          <h2>Identify User</h2>
+          <p style={{ color: '#495057', marginBottom: '1rem' }}>
+            Simulate identifying a user with specific traits after login or signup.
+          </p>
+          <div className="form-group">
+            <label htmlFor="identify-userid" className="form-label">User ID</label>
+            <input 
+              type="text" 
+              className="form-control" 
+              id="identify-userid" 
+              placeholder="Enter a User ID"
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="plan">
-              Choose Plan (User Property via Identify)
-            </label>
-            <select
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="plan"
-              name="plan"
-              value={plan}
-              onChange={e => setPlan(e.target.value)}
-            >
-              <option value="free">Free</option>
-              <option value="basic">Basic</option>
-              <option value="pro">Pro</option>
-            </select>
-          </div>
-          <button
-            type="submit"
-            className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded mt-2"
+          <TrackedElement
+            eventName="Button Clicked"
+            eventProperties={identifyButtonProps}
+            codeSnippet={identifyCodeSnippet} // Use the generated identify snippet
+            elementType="button"
           >
-            Sign Up / Login (Tracked)
-          </button>
-        </form>
-      </TrackedElement>
+            <button 
+              type="button" 
+              className="btn btn-secondary" 
+              onClick={handleIdentifyUser} 
+              disabled={!userId}
+            >
+              Identify User (Tracked)
+            </button>
+          </TrackedElement>
+        </div>
+      </div>
     </div>
   );
 };
+
+// Add CSS for .signup-login-grid to index.css
+/*
+.signup-login-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+*/
 
 export default SignupLoginPage; 

@@ -1,74 +1,84 @@
 import React, { useState } from 'react';
 import TrackedElement from '../components/TrackedElement';
 
+// Features Page using standard elements and CSS classes
 const FeaturesPage = () => {
-  // State for the feedback form
-  const [feedback, setFeedback] = useState('');
+  // Sample feature state (in real app, this might come from API or context)
+  const [features, setFeatures] = useState([
+    { id: 'feature-A', name: 'Advanced Reporting', description: 'Enable detailed analytics reports.', enabled: false },
+    { id: 'feature-B', name: 'AI Assistant', description: 'Get AI-powered insights and suggestions.', enabled: true },
+    { id: 'feature-C', name: 'Collaboration Tools', description: 'Share dashboards and findings with your team.', enabled: false },
+  ]);
 
-  // --- Define props/snippets inside component to access state ---
-  const button1Props = { featureName: 'Feature A', page: 'features' };
-  const button1Snippet = `amplitude.track('Feature Button Clicked', ${JSON.stringify(button1Props, null, 2)});`;
-
-  const button2Props = { featureName: 'Feature B', page: 'features' };
-  const button2Snippet = `amplitude.track('Feature Button Clicked', ${JSON.stringify(button2Props, null, 2)});`;
-
-  // Include feedback state in form properties
-  const formProps = { formName: 'Sample Form', page: 'features', feedback: feedback };
-  // Update snippet to show feedback being included
-  const formSnippet = `amplitude.track('Form Submitted', {
-  formName: 'Sample Form',
-  page: 'features',
-  feedback: '${feedback.replace(/'/g, "\'")}'
-});`;
-  // -----------------------------------------------------------
+  // Function to toggle feature state
+  const handleToggleFeature = (id) => {
+    setFeatures(currentFeatures =>
+      currentFeatures.map(f =>
+        f.id === id ? { ...f, enabled: !f.enabled } : f
+      )
+    );
+    // NOTE: Tracking is handled by TrackedElement wrapper below
+  };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Features Page</h1>
-      <p>Buttons, form elements, interactions placeholder (all tracked).</p>
+    <div>
+      <h1>Product Features</h1>
+      <p style={{ fontSize: '1.1rem', color: '#495057', marginBottom: '1.5rem' }}>
+          Explore the features available and see how interactions are tracked.
+      </p>
 
-      {/* Tracked Buttons */}
-      <TrackedElement eventName="Feature Button Clicked" eventProperties={button1Props} codeSnippet={button1Snippet}>
-        <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4 mr-2">
-          Feature Button 1 (Tracked)
-        </button>
-      </TrackedElement>
+      {/* Grid container for feature cards */}
+      <div className="features-grid">
+        {features.map((feature) => {
+          const eventProps = {
+              action_type: feature.enabled ? 'disable' : 'enable',
+              feature_name: feature.name,
+              page: 'Features',
+              location: 'feature_card'
+            };
+          const codeSnippet = `amplitude.track('Feature Toggle Clicked', ${JSON.stringify(eventProps, null, 2)});`;
 
-       <TrackedElement eventName="Feature Button Clicked" eventProperties={button2Props} codeSnippet={button2Snippet}>
-        <button className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mt-4">
-          Feature Button 2 (Tracked)
-        </button>
-      </TrackedElement>
+          return (
+            <div key={feature.id} className="card feature-card"> { /* Apply .card */}
+              <h2>{feature.name}</h2>
+              <p style={{ flexGrow: 1, marginBottom: '1.5rem' }}>{feature.description}</p> { /* flexGrow pushes button down */}
 
-      {/* Tracked Form */}
-      <div className="mt-8 border p-4 rounded">
-        <h2 className="text-xl font-semibold mb-2">Feedback Form</h2>
-        <TrackedElement
-          eventName="Form Submitted"
-          eventProperties={formProps} // Pass dynamic props
-          codeSnippet={formSnippet} // Pass dynamic snippet
-          interactionType="track"
-          trigger="onSubmit"
-        >
-          <form>
-            <label className="block mb-2">
-              Your Feedback:
-              <textarea
-                className="border rounded p-1 ml-2 w-full mt-1"
-                value={feedback} // Controlled component
-                onChange={e => setFeedback(e.target.value)} // Update state
-                rows={3}
-              ></textarea>
-            </label>
-            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2">
-              Submit Feedback (Tracked)
-            </button>
-          </form>
-        </TrackedElement>
+              {/* Ensure TrackedElement directly wraps the button it tracks */}
+              <TrackedElement
+                eventName="Feature Toggle Clicked"
+                eventProperties={eventProps}
+                codeSnippet={codeSnippet}
+                elementType="button"
+              >
+                <button
+                  type="button" // Explicitly set button type
+                  onClick={() => handleToggleFeature(feature.id)}
+                  className={`btn ${feature.enabled ? 'btn-secondary' : 'btn-primary'}`} // Apply .btn classes
+                  style={{ width: '100%' }} // Style prop seems okay, ensure it's the only one?
+                >
+                  {feature.enabled ? 'Disable Feature' : 'Enable Feature'}
+                </button>
+              </TrackedElement>
+            </div>
+          );
+        })}
       </div>
-
     </div>
   );
 };
+
+// Add CSS for .features-grid and .feature-card to index.css
+/*
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); // Responsive grid
+  gap: 1.5rem;
+}
+
+.feature-card {
+  display: flex;
+  flex-direction: column; // Ensure flexGrow works on paragraph
+}
+*/
 
 export default FeaturesPage; 

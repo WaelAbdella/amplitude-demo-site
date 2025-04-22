@@ -1,3 +1,396 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Basic Reset / Normalize */
+html {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, ol, ul {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Base Styles */
+body {
+  background-color: #f8f9fa; /* Light gray background */
+  color: #212529; /* Default text color */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Layout */
+.container {
+  width: 100%;
+  max-width: 1140px; /* Consistent max width */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+main.container {
+  flex-grow: 1; /* Ensure main content pushes footer down */
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.section {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.card {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6; /* Subtle border */
+  border-radius: 0.375rem; /* Consistent border radius */
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  color: #111827; /* Slightly darker heading color */
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+h1 { font-size: 2.25rem; font-weight: 600; }
+h2 { font-size: 1.75rem; font-weight: 600; }
+h3 { font-size: 1.25rem; font-weight: 600; }
+
+p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+a {
+  color: #0d6efd; /* Primary link color (example blue) */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code {
+  font-family: monospace;
+  background-color: #e9ecef;
+  padding: 0.1em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #212529;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 0.5rem 1rem; /* Adjusted padding */
+  font-size: 1rem;
+  border-radius: 0.375rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.btn:focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); /* Example focus ring */
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #0d6efd; /* Primary button color */
+  border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+.btn-secondary {
+  color: #fff;
+  background-color: #6c757d; /* Secondary button color */
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  color: #fff;
+  background-color: #5c636a;
+  border-color: #565e64;
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  appearance: none;
+  border-radius: 0.375rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  color: #212529;
+  background-color: #fff;
+  border-color: #86b7fe; /* Focus border color */
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+textarea.form-control {
+  min-height: calc(1.5em + 1rem + 2px); /* Default height */
+}
+
+/* Navbar Styles */
+.navbar {
+  background-color: #ffffff; 
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #dee2e6;
+  position: fixed; /* Make it fixed top */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #0d6efd; /* Brand color */
+  text-decoration: none;
+}
+.navbar-brand:hover {
+  text-decoration: none; /* Prevent underline */
+}
+
+.navbar-nav {
+  display: flex;
+  gap: 1.5rem; /* Increased Spacing between links */
+}
+
+.nav-link {
+  color: #495057;
+  text-decoration: none;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.nav-link:hover {
+  color: #0d6efd;
+  text-decoration: none;
+}
+
+.nav-link.active {
+  color: #0d6efd;
+  font-weight: 500;
+  border-bottom-color: #0d6efd;
+}
+
+/* Small Button Variant */
+.btn-sm {
+  padding: 0.25rem 0.75rem; 
+  font-size: 0.875rem;
+  border-radius: 0.25rem; /* Slightly smaller radius */
+}
+
+.navbar-dev-toggle {
+  /* Uses .btn, .btn-secondary, .btn-sm */
+  /* Style for active state */
+}
+
+.navbar-dev-toggle.active {
+  background-color: #ffc107; /* Example active color - Yellow */
+  border-color: #ffc107;
+  color: #000;
+}
+.navbar-dev-toggle.active:hover {
+  background-color: #e0a800;
+  border-color: #d39e00;
+  color: #000;
+}
+
+/* Features Page Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+  gap: 1.5rem;
+}
+
+.feature-card {
+  display: flex;
+  flex-direction: column; /* Ensure flexGrow works on paragraph */
+}
+
+/* Outline Button Variant */
+.btn-outline-primary {
+  color: #0d6efd; /* Primary color text */
+  border-color: #0d6efd; /* Primary color border */
+  background-color: transparent;
+}
+
+.btn-outline-primary:hover {
+  color: #fff; /* White text on hover */
+  background-color: #0d6efd; /* Primary background on hover */
+  border-color: #0d6efd;
+}
+
+/* Signup/Login Page Grid */
+.signup-login-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Dev Info Panel Styles */
+.dev-info-panel {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  width: 100%;
+  max-width: 450px;
+  z-index: 1050; /* Ensure it's above most content */
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  font-size: 0.875rem; /* Smaller base font for panel */
+}
+
+.dev-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #e9ecef;
+  border-bottom: 1px solid #dee2e6;
+  border-top-left-radius: 0.375rem;
+  border-top-right-radius: 0.375rem;
+}
+
+.dev-info-header h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.dev-info-logs {
+  padding: 0.75rem 1rem;
+  max-height: 250px; /* Limit height and enable scroll */
+  overflow-y: auto;
+}
+
+.dev-info-no-logs {
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
+  padding: 1rem 0;
+  margin-bottom: 0; /* Override default p margin */
+}
+
+.dev-info-log-list {
+  list-style-type: none; /* Remove default list style */
+  padding: 0;
+}
+
+.dev-info-log-item {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e9ecef;
+}
+.dev-info-log-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.log-type {
+  font-weight: 600;
+  display: inline-block;
+  margin-right: 0.5rem;
+  background-color: #f8f9fa;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  border: 1px solid #dee2e6;
+}
+
+.log-timestamp {
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+.log-details {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.log-data-pre, .log-code-pre {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  border-radius: 0.25rem;
+  overflow-x: auto; /* Allow horizontal scroll for long lines */
+  white-space: pre-wrap; /* Wrap long lines */
+  word-wrap: break-word; /* Break long words if needed */
+  font-size: 0.8rem;
+}
+
+.log-code-snippet {
+  margin-top: 0.5rem;
+}

@@ -11,15 +11,29 @@ const Layout = () => {
   const toggleDevMode = () => setIsDevMode(prev => !prev);
 
   return (
-    <div>
+    <>
       <Navbar isDevMode={isDevMode} toggleDevMode={toggleDevMode} />
-      <main className="container mx-auto mt-4 relative pb-64">
+
+      <main className="container" style={{ paddingTop: '60px' }}>
         <Outlet context={{ isDevMode }} />
-        {/* Conditionally render Developer Info Panel */}
-        {isDevMode && <DevInfoPanel />}
       </main>
-      {/* Developer Info Panel Component instance will go here */}
-    </div>
+
+      {isDevMode && <DevInfoPanel />}
+
+      <footer style={{ 
+          marginTop: 'auto',
+          backgroundColor: '#e9ecef',
+          padding: '1rem 0', 
+          textAlign: 'center',
+          fontSize: '0.9rem',
+          color: '#6c757d',
+          borderTop: '1px solid #dee2e6'
+        }}>
+        <div className="container">
+          Convz Amplitude Demo &copy; {new Date().getFullYear()}
+        </div>
+      </footer>
+    </>
   );
 };
 

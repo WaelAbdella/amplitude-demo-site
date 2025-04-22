@@ -1,99 +1,54 @@
-import React, { useState } from 'react';
-import TrackedElement from '../components/TrackedElement';
+import React from 'react';
 
+// About/Contact Page using standard elements and CSS classes
 const AboutContactPage = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
-
-  // Define event properties for the form
-  const formEventProps = {
-    form_type: 'contact',
-    page: 'about_contact',
-    name: formData.name,
-    email: formData.email,
-  };
-  const formCodeSnippet = `amplitude.track('Form Submitted', {
-  form_type: 'contact',
-  page: 'about_contact',
-  name: '${formData.name.replace(/'/g, "\'")}',
-  email: '${formData.email.replace(/'/g, "\'")}'
-  // message length: ${formData.message.length}
-});`;
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">About/Contact Page</h1>
-      <p>Form-based track call simulation placeholder. Submitting the form will trigger a <code>track()</code> call including the entered name and email.</p>
+    <div>
+      <h1>About Us & Contact</h1>
 
-      {/* Tracked Form */}
-      <TrackedElement
-        eventName="Form Submitted"
-        eventProperties={formEventProps}
-        codeSnippet={formCodeSnippet}
-        interactionType="track"
-        trigger="onSubmit"
-      >
-        <form className="mt-4">
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-              Name
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="name"
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
+      <div className="section card">
+        <h2>About This Demo</h2>
+        <p>
+          This website is a demonstration project showcasing the integration of Amplitude analytics 
+          within a React application. It illustrates how to track various user interactions, 
+          including page views, button clicks, form submissions, and user identification.
+        </p>
+        <p>
+          The goal is to provide a clear, practical example for developers looking to implement 
+          event tracking using the Amplitude Browser SDK.
+        </p>
+      </div>
+
+      <div className="section">
+        <h2>Contact Information</h2>
+        <p>
+          This is a demo site and not a real service. If you have questions about Amplitude integration, 
+          please refer to the official Amplitude documentation.
+        </p>
+        <p>
+          For inquiries regarding the development of this specific demo, you can reach out through the associated 
+          GitHub repository or contact the developer directly (details would go here in a real project).
+        </p>
+        {/* Example: Add a simple contact form placeholder if needed */}
+        {/* 
+        <form className="card" style={{ marginTop: '1.5rem' }}>
+          <h3>Quick Contact</h3>
+          <div className="form-group">
+            <label className="form-label" htmlFor="contact-name">Name</label>
+            <input type="text" id="contact-name" className="form-control" />
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-              Email
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="email"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
+          <div className="form-group">
+            <label className="form-label" htmlFor="contact-email">Email</label>
+            <input type="email" id="contact-email" className="form-control" />
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="message">
-              Message
-            </label>
-            <textarea
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="message"
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              rows={4}
-            />
+          <div className="form-group">
+            <label className="form-label" htmlFor="contact-message">Message</label>
+            <textarea id="contact-message" className="form-control" rows="3"></textarea>
           </div>
-          <button
-            type="submit"
-            className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Submit
-          </button>
+          <button type="submit" className="btn btn-primary">Send Message</button>
         </form>
-      </TrackedElement>
+         */}
+      </div>
     </div>
   );
 };
