@@ -49,7 +49,7 @@ const DevInfoPanel = () => {
             {logs.length === 0 ? (
               <p className="text-gray-500 italic">No logs yet. Interact with tracked elements.</p>
             ) : (
-              <ul>
+              <ol className="list-decimal list-inside">
                 {logs.map((log, index) => (
                   <li key={index} className="mb-2 pb-2 border-b border-gray-200 last:border-b-0">
                     <span className="font-semibold">{log.type}</span> <span className="text-gray-500">{formatTimestamp(log.timestamp)}</span>
@@ -70,7 +70,7 @@ const DevInfoPanel = () => {
                     )}
                   </li>
                 ))}
-              </ul>
+              </ol>
             )}
           </div>
         )}
