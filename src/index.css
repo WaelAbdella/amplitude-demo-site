@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply font-sans bg-[#F7F9FC] text-gray-800;
+    @apply font-sans bg-[#F7F9FC] text-gray-800 min-h-screen;
   }
 }
 
@@ -90,7 +90,16 @@
 
   /* Page Layout */
   .page-container {
-    @apply max-w-7xl mx-auto px-4 py-8;
+    @apply max-w-7xl mx-auto px-4 py-8 w-full;
+  }
+
+  /* Footer Styles */
+  .site-footer {
+    @apply bg-white border-t border-[#BDDCED] py-4 mt-auto;
+  }
+
+  .site-footer p {
+    @apply text-center text-gray-600;
   }
 }
 
@@ -105,6 +114,11 @@
 
 .cta-buttons {
   @apply mt-8 space-x-4;
+}
+
+/* Ensure content stays centered */
+#root {
+  @apply w-full flex justify-center;
 }
 
 /* Basic Reset / Normalize */
