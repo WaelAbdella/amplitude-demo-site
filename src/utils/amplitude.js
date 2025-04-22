@@ -1,7 +1,7 @@
 import * as amplitude from '@amplitude/analytics-browser';
 
 // !!! IMPORTANT: Replace this with your actual Amplitude API Key !!!
-const AMPLITUDE_API_KEY = 'YOUR_API_KEY_HERE'; // Placeholder
+const AMPLITUDE_API_KEY = '93a30739be4e1aa9110e3a82b95d8710';
 
 export const initAmplitude = () => {
   if (!AMPLITUDE_API_KEY || AMPLITUDE_API_KEY === 'YOUR_API_KEY_HERE') {
