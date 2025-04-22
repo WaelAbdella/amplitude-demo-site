@@ -39,9 +39,14 @@ amplitude.track('Signup Form Submitted', {
         const identifyObj = new Identify().set('plan', plan); // Create Identify object
         identify(identifyObj); // Call identify
         console.log(`Amplitude Identify call sent for plan: ${plan}`);
-        // Log Identify Call
+        // Log Identify Call - Pass a simple object for properties
         const identifySnippet = `const identifyObj = new Identify().set('plan', '${plan}');\namplitude.identify(identifyObj);`;
-        devInfoLogger.addLog('identify', 'User Identify', identifyObj.payload, identifySnippet);
+        devInfoLogger.addLog(
+            'identify', 
+            'User Identify', 
+            { plan: plan }, // Pass simple {plan: plan} object here
+            identifySnippet
+        );
 
      } else {
         // Still set user ID to null for anonymous
