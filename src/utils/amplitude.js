@@ -1,7 +1,13 @@
 import * as amplitude from '@amplitude/analytics-browser';
+import { sessionReplayPlugin } from '@amplitude/plugin-session-replay-browser';
+import { autocapturePlugin } from '@amplitude/plugin-autocapture-browser';
 
 // !!! IMPORTANT: Replace this with your actual Amplitude API Key !!!
 const AMPLITUDE_API_KEY = '93a30739be4e1aa9110e3a82b95d8710';
+
+// Initialize plugins
+const replay = sessionReplayPlugin();
+const autocapture = autocapturePlugin();
 
 export const initAmplitude = () => {
   if (!AMPLITUDE_API_KEY || AMPLITUDE_API_KEY === 'YOUR_API_KEY_HERE') {
@@ -9,24 +15,25 @@ export const initAmplitude = () => {
     return;
   }
 
+  // Add plugins before init
+  amplitude.add(replay);
+  amplitude.add(autocapture);
+
   amplitude.init(AMPLITUDE_API_KEY, undefined, { // Using undefined for userId initially
     defaultTracking: {
       sessions: true,
       pageViews: false, // We'll handle page views manually for more control
-      formInteractions: true, // Autocapture form interactions
-      fileDownloads: true, // Autocapture file downloads
+      formInteractions: false, // Disable default form tracking if using autocapture plugin for forms
+      fileDownloads: true,
     },
-    // Enable Session Replay
-    // Requires Amplitude Experiment or paid plan: https://www.docs.developers.amplitude.com/data/session-replay/
-    // sessionReplay: true, // Uncomment if you have Session Replay enabled in your plan
+    // Session Replay is enabled via the plugin
+    // sessionReplay: true, // This config option might still be useful for certain settings
 
-    // Enable Autocapture via BROWSER SDK Enrichment Plugin
-    // See: https://www.docs.developers.amplitude.com/data/sdks/typescript-browser/plugins/enrichment/autocapture/
-    // Requires adding the plugin - let's add basic default tracking first.
-    // Will revisit adding the explicit Autocapture plugin if default tracking isn't sufficient.
+    // Autocapture is enabled via the plugin
+    // Ensure the plugin is added before init
   });
 
-  console.log('Amplitude SDK Initialized');
+  console.log('Amplitude SDK Initialized with Session Replay and Autocapture');
 };
 
 // Export track and identify for use in components

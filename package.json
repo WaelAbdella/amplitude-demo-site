@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@amplitude/analytics-browser": "^2.15.0",
+    "@amplitude/plugin-autocapture-browser": "^1.1.8",
+    "@amplitude/plugin-session-replay-browser": "^1.15.0",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
