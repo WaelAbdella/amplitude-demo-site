@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import TrackedElement from '../components/TrackedElement';
 import { Identify, setUserId } from '../utils/amplitude';
+import { devInfoLogger } from '../utils/DevInfoLogger';
 
 const SignupLoginPage = () => {
   const [email, setEmail] = useState('');
@@ -17,24 +18,24 @@ amplitude.track('Signup Form Submitted', {
   page: 'signup_login',
   email: '${email.replace(/'/g, "\'")}',
   plan: '${plan}'
-});
-
-// Separate User Identification:
-// amplitude.setUserId('${email.replace(/'/g, "\'")}');
-// const identifyObj = new Identify().set('plan', '${plan}');
-// amplitude.identify(identifyObj);`;
+});`;
+  // Separate snippet for setUserId log
+  const setUserIdSnippet = email ? `amplitude.setUserId('${email.replace(/'/g, "\'")}');` : `amplitude.setUserId(null);`;
 
   // Handler to set userId *before* form submission tracking
   const handleFormSubmit = () => {
      if (email) {
         setUserId(email);
         console.log(`Amplitude User ID set to: ${email}`);
-        // Optionally send an identify call here too if needed
-        // const identifyObj = new Identify().set('plan', plan);
-        // identify(identifyObj); // Using the imported identify
+        // --- Log setUserId to Dev Panel ---
+        devInfoLogger.addLog('setUserId', { userId: email }, setUserIdSnippet);
+        // -------------------------------------
      } else {
         setUserId(null);
         console.log('Amplitude User ID cleared (no email provided).');
+        // --- Log setUserId(null) to Dev Panel ---
+        devInfoLogger.addLog('setUserId', { userId: null }, setUserIdSnippet);
+        // -----------------------------------------
      }
      // The track call is handled by TrackedElement on submit
   };
@@ -42,9 +43,9 @@ amplitude.track('Signup Form Submitted', {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Signup/Login Page</h1>
-      <p>Form-based track call simulation. Submitting the form will set the User ID (if email provided) and trigger a <code>track()</code> call for the submission including email and plan.</p>
+      <p>Form-based track call simulation. Submitting the form will set the User ID (if email provided) and trigger a <code>track()</code> call for the submission including email and plan. Both actions will appear in Dev Logs.</p>
 
-      {/* Tracked Form - now using track instead of identify */}
+      {/* Tracked Form - tracks the submit action */}
       <TrackedElement
         eventName="Signup Form Submitted" // Event name for the CTA
         eventProperties={formEventProps}    // Pass dynamic props
