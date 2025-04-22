@@ -297,21 +297,47 @@ textarea.form-control {
   gap: 1.5rem;
 }
 
-/* Dev Info Panel Styles */
-.dev-info-panel {
-  position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  width: 100%;
-  max-width: 450px;
-  z-index: 1050; /* Ensure it's above most content */
-  background-color: #fff;
-  border: 1px solid #dee2e6;
-  border-radius: 0.375rem;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  font-size: 0.875rem; /* Smaller base font for panel */
+/* -- DEV SIDEBAR STYLES -- */
+
+/* New wrapper for main content + sidebar */
+.layout-with-sidebar {
+  display: flex;
+  flex-grow: 1; /* Ensure this container takes up space */
 }
 
+/* Adjust main container when sidebar is present */
+.layout-with-sidebar > main.container {
+  flex-grow: 1; /* Main content takes remaining space */
+  /* Remove fixed paddingTop, handle spacing relative to sidebar/navbar */
+  padding-top: 1.5rem; /* Revert to standard padding */
+  /* Add padding to prevent overlap with fixed navbar */
+  /* The actual value depends on the final navbar height */
+  margin-top: 57px; /* Example: Adjust based on final navbar height */
+  width: calc(100% - 350px); /* Adjust width considering sidebar */
+  margin-left: 0; /* Align to left when sidebar is present */
+}
+
+/* Dev Info Panel as Sidebar */
+.dev-info-sidebar {
+  /* position: fixed; */ /* Revisit if needed, flex might be enough */
+  /* top: 57px; */ /* Position below fixed navbar */
+  /* right: 0; */
+  width: 350px; /* Sidebar width */
+  height: calc(100vh - 57px); /* Full height below navbar */
+  overflow-y: hidden; /* Let inner content scroll */
+  background-color: #fff;
+  border-left: 1px solid #dee2e6;
+  /* border-radius: 0; */ /* Remove radius for sidebar */
+  box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+  font-size: 0.875rem;
+  display: flex; /* Use flex to manage header/logs height */
+  flex-direction: column;
+  flex-shrink: 0; /* Prevent sidebar from shrinking */
+  /* Add margin top to account for fixed navbar */
+  margin-top: 57px; /* Match navbar height */
+}
+
+/* Keep header styles similar */
 .dev-info-header {
   display: flex;
   justify-content: space-between;
@@ -319,8 +345,8 @@ textarea.form-control {
   padding: 0.5rem 1rem;
   background-color: #e9ecef;
   border-bottom: 1px solid #dee2e6;
-  border-top-left-radius: 0.375rem;
-  border-top-right-radius: 0.375rem;
+  /* border-radius: 0; */
+  flex-shrink: 0; /* Prevent header from shrinking */
 }
 
 .dev-info-header h3 {
@@ -329,25 +355,21 @@ textarea.form-control {
   margin-bottom: 0;
 }
 
+/* Let logs container take remaining height and scroll */
 .dev-info-logs {
   padding: 0.75rem 1rem;
-  max-height: 250px; /* Limit height and enable scroll */
   overflow-y: auto;
+  flex-grow: 1; /* Take remaining space */
+  /* max-height removed, height controlled by flex */
 }
 
-.dev-info-no-logs {
-  color: #6c757d;
-  font-style: italic;
-  text-align: center;
-  padding: 1rem 0;
-  margin-bottom: 0; /* Override default p margin */
-}
-
+/* Use ordered list for numbering */
 .dev-info-log-list {
-  list-style-type: none; /* Remove default list style */
-  padding: 0;
+  list-style-type: decimal; /* Use numbers */
+  padding-left: 1.5rem; /* Indent numbers */
 }
 
+/* Other log item styles remain similar */
 .dev-info-log-item {
   margin-bottom: 0.75rem;
   padding-bottom: 0.75rem;
@@ -358,7 +380,7 @@ textarea.form-control {
   padding-bottom: 0;
   border-bottom: none;
 }
-
+/* ... keep other log item styles (.log-type, .log-timestamp, etc.) ... */
 .log-type {
   font-weight: 600;
   display: inline-block;
@@ -393,4 +415,23 @@ textarea.form-control {
 
 .log-code-snippet {
   margin-top: 0.5rem;
+}
+
+.dev-info-no-logs {
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
+  padding: 1rem 0;
+  margin-bottom: 0; /* Override default p margin */
+}
+
+/* Site Footer */
+.site-footer {
+  margin-top: auto; /* Push footer to bottom */
+  background-color: #e9ecef; /* Footer background */
+  padding: 1rem 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #6c757d;
+  border-top: 1px solid #dee2e6;
 }

@@ -14,21 +14,15 @@ const Layout = () => {
     <>
       <Navbar isDevMode={isDevMode} toggleDevMode={toggleDevMode} />
 
-      <main className="container" style={{ paddingTop: '60px' }}>
-        <Outlet context={{ isDevMode }} />
-      </main>
+      <div className={isDevMode ? "layout-with-sidebar" : ""}>
+        <main className="container">
+          <Outlet context={{ isDevMode }} />
+        </main>
 
-      {isDevMode && <DevInfoPanel />}
+        {isDevMode && <DevInfoPanel className="dev-info-sidebar" />}
+      </div>
 
-      <footer style={{ 
-          marginTop: 'auto',
-          backgroundColor: '#e9ecef',
-          padding: '1rem 0', 
-          textAlign: 'center',
-          fontSize: '0.9rem',
-          color: '#6c757d',
-          borderTop: '1px solid #dee2e6'
-        }}>
+      <footer className="site-footer">
         <div className="container">
           Convz Amplitude Demo &copy; {new Date().getFullYear()}
         </div>

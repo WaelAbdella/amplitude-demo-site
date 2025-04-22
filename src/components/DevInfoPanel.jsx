@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { devInfoLogger } from '../utils/DevInfoLogger'; // Import the logger instance
 
 // Dev Info Panel using standard elements and CSS classes
-const DevInfoPanel = () => {
+const DevInfoPanel = ({ className }) => {
   const [logs, setLogs] = useState(devInfoLogger.getLogs());
   const [isVisible, setIsVisible] = useState(true); // Allow collapsing the panel
 
@@ -22,7 +22,7 @@ const DevInfoPanel = () => {
   };
 
   return (
-    <div className="dev-info-panel"> {/* Main container class */}
+    <div className={className || 'dev-info-sidebar'}> {/* Main container class */}
       <div className="dev-info-header"> {/* Header class */}
         <h3>Amplitude Dev Logs</h3>
         <div>
@@ -36,10 +36,10 @@ const DevInfoPanel = () => {
           <button
             onClick={() => setIsVisible(!isVisible)}
             className="btn btn-secondary btn-sm" /* Use standard button classes */
-            title={isVisible ? 'Collapse' : 'Expand'}
+            title={isVisible ? 'Collapse Section' : 'Expand Section'}
             style={{ marginLeft: '0.25rem' }}
           >
-            {isVisible ? '—' : '+'} { /* Use characters for collapse/expand */}
+            {isVisible ? '−' : '+'} { /* Use characters for collapse/expand */}
           </button>
         </div>
       </div>
@@ -59,8 +59,13 @@ const DevInfoPanel = () => {
                   <span className="log-type">{log.type}</span> 
                   <span className="log-timestamp">{formatTimestamp(log.timestamp)}</span>
                   <p className="log-details">
-                    <strong>Event:</strong> {log.name || 'N/A'}<br />
-                    <strong>Data:</strong>
+                    {/* Display name differently based on type */}
+                    {log.type === 'track' && <><strong>Event:</strong> {log.name || 'N/A'}<br /></>}
+                    {log.type === 'identify' && <><strong>Identify:</strong> User Traits<br /></>}
+                    {log.type === 'setUserId' && <><strong>Set User ID:</strong> {log.properties?.userId ?? 'N/A'}<br /></>}
+                    {log.type === 'error' && <><strong>Error:</strong> {log.name || 'N/A'}<br /></>}
+                    
+                    <strong>Data/Properties:</strong>
                     <pre className="log-data-pre"> { /* Preformatted data class */}
                       {JSON.stringify(log.properties || {}, null, 2)}
                     </pre>
