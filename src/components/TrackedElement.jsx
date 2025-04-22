@@ -42,23 +42,22 @@ const TrackedElement = ({
     if (interactionType === 'track' && eventName) {
       track(eventName, eventProperties || {}); // Use standard track
       if (isDevMode) {
-        devInfoLogger.addLog('track', {
-          name: eventName,
-          properties: eventProperties || {},
-          code: codeSnippet,
-        });
+        devInfoLogger.addLog(
+          'track', 
+          eventName,
+          eventProperties || {}, 
+          codeSnippet
+        );
       }
     } else if (interactionType === 'identify' && identifyObject instanceof Identify) {
       identify(identifyObject); // Use standard identify
        if (isDevMode) {
-        // Log identify call. Identify object structure might be complex,
-        // log relevant parts or the code snippet.
-        // For simplicity, logging the code snippet which should detail the identify properties.
-         devInfoLogger.addLog('identify', {
-           name: 'User Identify',
-           properties: identifyObject.payload,
-           code: codeSnippet,
-         });
+        devInfoLogger.addLog(
+          'identify', 
+          'User Identify',
+          identifyObject.payload,
+          codeSnippet
+        );
        }
     }
   };

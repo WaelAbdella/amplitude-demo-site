@@ -27,15 +27,23 @@ amplitude.track('Signup Form Submitted', {
      if (email) {
         setUserId(email);
         console.log(`Amplitude User ID set to: ${email}`);
-        // --- Log setUserId to Dev Panel ---
-        devInfoLogger.addLog('setUserId', { userId: email }, setUserIdSnippet);
-        // -------------------------------------
+        // Pass args: type, name, properties, codeSnippet
+        devInfoLogger.addLog(
+          'setUserId', 
+          'Set User ID', // Provide a name for the log entry
+          { userId: email }, // Pass data as properties
+          setUserIdSnippet
+        );
      } else {
         setUserId(null);
         console.log('Amplitude User ID cleared (no email provided).');
-        // --- Log setUserId(null) to Dev Panel ---
-        devInfoLogger.addLog('setUserId', { userId: null }, setUserIdSnippet);
-        // -----------------------------------------
+        // Pass args: type, name, properties, codeSnippet
+        devInfoLogger.addLog(
+          'setUserId', 
+          'Clear User ID', // Provide a name
+          { userId: null }, // Pass data as properties
+          setUserIdSnippet
+        );
      }
      // The track call is handled by TrackedElement on submit
   };

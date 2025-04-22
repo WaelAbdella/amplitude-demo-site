@@ -6,9 +6,9 @@ class DevInfoLogger {
     this.maxLogs = 50; // Limit logs to prevent memory issues
   }
 
-  addLog(type, data, codeSnippet = '') {
+  addLog(type, name, properties, codeSnippet = '') {
     const timestamp = new Date().toISOString();
-    const logEntry = { type, data, codeSnippet, timestamp };
+    const logEntry = { type, name, properties, code: codeSnippet, timestamp };
 
     this.logs.unshift(logEntry); // Add to the beginning
     if (this.logs.length > this.maxLogs) {
