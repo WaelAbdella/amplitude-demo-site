@@ -50,7 +50,7 @@ const DevInfoPanel = () => {
               <p className="text-gray-500 italic">No logs yet. Interact with tracked elements.</p>
             ) : (
               <ol className="list-decimal list-inside">
-                {logs.map((log, index) => (
+                {logs.slice().reverse().map((log, index) => (
                   <li key={index} className="mb-2 pb-2 border-b border-gray-200 last:border-b-0">
                     <span className="font-semibold">{log.type}</span> <span className="text-gray-500">{formatTimestamp(log.timestamp)}</span>
                     <p className="mt-1 mb-1">

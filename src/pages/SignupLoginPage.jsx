@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TrackedElement from '../components/TrackedElement';
-import { Identify, setUserId } from '../utils/amplitude';
+import { Identify, identify, setUserId } from '../utils/amplitude';
 import { devInfoLogger } from '../utils/DevInfoLogger';
 
 const SignupLoginPage = () => {
@@ -22,46 +22,55 @@ amplitude.track('Signup Form Submitted', {
   // Separate snippet for setUserId log
   const setUserIdSnippet = email ? `amplitude.setUserId('${email.replace(/'/g, "\'")}');` : `amplitude.setUserId(null);`;
 
-  // Handler to set userId *before* form submission tracking
+  // Handler to set userId *and* identify *before* form submission tracking
   const handleFormSubmit = () => {
      if (email) {
+        // 1. Set User ID
         setUserId(email);
         console.log(`Amplitude User ID set to: ${email}`);
-        // Pass args: type, name, properties, codeSnippet
         devInfoLogger.addLog(
           'setUserId', 
-          'Set User ID', // Provide a name for the log entry
-          { userId: email }, // Pass data as properties
+          'Set User ID', 
+          { userId: email }, 
           setUserIdSnippet
         );
+
+        // 2. Identify User (Set Properties)
+        const identifyObj = new Identify().set('plan', plan); // Create Identify object
+        identify(identifyObj); // Call identify
+        console.log(`Amplitude Identify call sent for plan: ${plan}`);
+        // Log Identify Call
+        const identifySnippet = `const identifyObj = new Identify().set('plan', '${plan}');\namplitude.identify(identifyObj);`;
+        devInfoLogger.addLog('identify', 'User Identify', identifyObj.payload, identifySnippet);
+
      } else {
+        // Still set user ID to null for anonymous
         setUserId(null);
         console.log('Amplitude User ID cleared (no email provided).');
-        // Pass args: type, name, properties, codeSnippet
         devInfoLogger.addLog(
           'setUserId', 
-          'Clear User ID', // Provide a name
-          { userId: null }, // Pass data as properties
+          'Clear User ID', 
+          { userId: null }, 
           setUserIdSnippet
         );
      }
-     // The track call is handled by TrackedElement on submit
+     // 3. Track Form Submission (handled by TrackedElement wrapper automatically after this handler)
   };
 
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Signup/Login Page</h1>
-      <p>Form-based track call simulation. Submitting the form will set the User ID (if email provided) and trigger a <code>track()</code> call for the submission including email and plan. Both actions will appear in Dev Logs.</p>
+      <p>Submitting the form will set the User ID, send an <code>identify()</code> call (setting plan property), and track the submission event. All actions appear in Dev Logs.</p>
 
       {/* Tracked Form - tracks the submit action */}
       <TrackedElement
-        eventName="Signup Form Submitted" // Event name for the CTA
-        eventProperties={formEventProps}    // Pass dynamic props
-        codeSnippet={formCodeSnippet}     // Pass dynamic snippet
-        interactionType="track"         // Changed to track
+        eventName="Signup Form Submitted"
+        eventProperties={formEventProps}
+        codeSnippet={formCodeSnippet}
+        interactionType="track"
         trigger="onSubmit"
       >
-        <form onSubmit={handleFormSubmit} className="mt-4 border p-4 rounded"> {/* Call handler on submit */}
+        <form onSubmit={handleFormSubmit} className="mt-4 border p-4 rounded">
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
               Email (Sets User ID)
@@ -78,7 +87,7 @@ amplitude.track('Signup Form Submitted', {
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="plan">
-              Choose Plan (User Property)
+              Choose Plan (User Property via Identify)
             </label>
             <select
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
