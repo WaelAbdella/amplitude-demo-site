@@ -21,12 +21,6 @@ const Layout = () => {
 
         {isDevMode && <DevInfoPanel className="dev-info-sidebar" />}
       </div>
-
-      <footer className="site-footer">
-        <div className="container">
-          Convz Amplitude Demo &copy; {new Date().getFullYear()}
-        </div>
-      </footer>
     </>
   );
 };
