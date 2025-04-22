@@ -42,8 +42,7 @@ const TrackedElement = ({
     if (interactionType === 'track' && eventName) {
       track(eventName, eventProperties || {}); // Use standard track
       if (isDevMode) {
-        devInfoLogger.log({
-          type: 'track',
+        devInfoLogger.addLog('track', {
           name: eventName,
           properties: eventProperties || {},
           code: codeSnippet,
@@ -55,10 +54,9 @@ const TrackedElement = ({
         // Log identify call. Identify object structure might be complex,
         // log relevant parts or the code snippet.
         // For simplicity, logging the code snippet which should detail the identify properties.
-         devInfoLogger.log({
-           type: 'identify',
-           name: 'User Identify', // Generic name for identify calls
-           properties: identifyObject.payload, // Log the actual payload
+         devInfoLogger.addLog('identify', {
+           name: 'User Identify',
+           properties: identifyObject.payload,
            code: codeSnippet,
          });
        }
