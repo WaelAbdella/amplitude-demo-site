@@ -10,7 +10,6 @@ import { initAmplitude } from './utils/amplitude';
 import TrackPageViews from './components/TrackPageViews';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import DevInfoPanel from './components/DevInfoPanel';
 import { DevModeProvider } from './contexts/DevModeContext';
 
 function App() {
@@ -37,7 +36,6 @@ function App() {
             </Routes>
           </main>
           <Footer />
-          <DevInfoPanel />
         </div>
       </Router>
     </DevModeProvider>
