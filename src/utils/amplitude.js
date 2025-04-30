@@ -40,6 +40,21 @@ export const setUserId = amplitude.setUserId;
 export const reset = amplitude.reset; // Useful for logout simulation
 export { Identify } from '@amplitude/analytics-browser'; // Re-export Identify for convenience
 
+// A/B Testing helper functions
+export const getExperimentVariant = (experimentKey) => {
+  if (window.amplitude && window.amplitude.getExperiment) {
+    const variant = window.amplitude.getExperiment(experimentKey);
+    return variant;
+  }
+  return null;
+};
+
+export const isExperimentActive = (experimentKey) => {
+  if (window.amplitude && window.amplitude.isExperimentActive) {
+    return window.amplitude.isExperimentActive(experimentKey);
+  }
+  return false;
+};
 
 // --- Function to track page views ---
 // We need access to location, so this might be better implemented
