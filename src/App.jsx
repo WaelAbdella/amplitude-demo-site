@@ -19,7 +19,7 @@ function App() {
 
   return (
     <DevModeProvider>
-      <Router>
+      <Router basename="/">
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <main className="flex-grow">
